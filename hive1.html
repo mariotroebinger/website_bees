@@ -8,29 +8,33 @@
 </head>
 <body>
     <h1>Hive 1</h1>
-    <h2>Today</h2>
-    <p id="todayDate"><strong>Date:</strong> <span id="dateValue"></span></p>
+    <h2>Today: <span id="dateValue"></span></h2>
     <p id="todayMass"><strong>Mass:</strong> <span id="massValue"></span></p>
-    <button onclick="updateChart(5)">Last 5 Days</button>
-    <button onclick="updateChart(10)">Last 10 Days</button>
-    <button onclick="updateChart(20)">Last 20 Days</button>
-    <canvas id="myChart" width="400" height="200"></canvas>
+    <p id="todayTemp"><strong>Temperature:</strong> <span id="tempValue"></span></p>
+    <p id="todayHumidity"><strong>Humidity:</strong> <span id="humidityValue"></span></p>
+    <button onclick="updateCharts(5)">Last 5 Days</button>
+    <button onclick="updateCharts(10)">Last 10 Days</button>
+    <button onclick="updateCharts(20)">Last 20 Days</button>
+    <canvas id="massChart" width="400" height="200"></canvas>
+    <canvas id="tempChart" width="400" height="200"></canvas>
+    <canvas id="humidityChart" width="400" height="200"></canvas>
     <a href="index.html">Back to Home</a>
     <script>
-        let chart;
-        const ctx = document.getElementById('myChart').getContext('2d');
+        let massChart;
+        let tempChart;
+        let humidityChart;
+        const massCtx = document.getElementById('massChart').getContext('2d');
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
 
-        function createChart(dates, masses, days) {
-            if (chart) {
-                chart.destroy();
-            }
-            chart = new Chart(ctx, {
+        function createChart(ctx, labels, data, label, yAxisLabel) {
+            return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: dates,
+                    labels: labels,
                     datasets: [{
-                        label: `Last ${days} Days`,
-                        data: masses,
+                        label: label,
+                        data: data,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
                         fill: false
@@ -46,7 +50,7 @@
                         y: {
                             title: {
                                 display: true,
-                                text: 'Mass [kg]'
+                                text: yAxisLabel
                             }
                         }
                     }
@@ -54,22 +58,39 @@
             });
         }
 
-        function updateChart(days) {
+        function updateCharts(days) {
             fetch('hive1.json')
                 .then(response => response.json())
                 .then(data => {
                     const dates = data.dates.slice(0, days);
                     const masses = data.masses.slice(0, days);
-                    createChart(dates, masses, days);
+                    const temperatures = data.temperatures.slice(0, days);
+                    const humidities = data.humidities.slice(0, days);
+
+                    if (massChart) {
+                        massChart.destroy();
+                    }
+                    if (tempChart) {
+                        tempChart.destroy();
+                    }
+                    if (humidityChart) {
+                        humidityChart.destroy();
+                    }
+
+                    massChart = createChart(massCtx, dates, masses, `Mass over Last ${days} Days`, 'Mass [kg]');
+                    tempChart = createChart(tempCtx, dates, temperatures, `Temperature over Last ${days} Days`, 'Temperature [°C]');
+                    humidityChart = createChart(humidityCtx, dates, humidities, `Humidity over Last ${days} Days`, 'Humidity [%]');
+
                     document.getElementById('dateValue').innerText = `${data.dates[0]}`;
                     document.getElementById('massValue').innerText = `${data.masses[0]} kg`;
+                    document.getElementById('tempValue').innerText = `${data.temperatures[0]} °C`;
+                    document.getElementById('humidityValue').innerText = `${data.humidities[0]} %`;
                 })
                 .catch(error => console.error('Error fetching the data:', error));
         }
 
-        // Initialize the chart with the last 10 days by default
-        updateChart(10);
+        // Initialize the charts with the last 10 days by default
+        updateCharts(10);
     </script>
 </body>
 </html>
-

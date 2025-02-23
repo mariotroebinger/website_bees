@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hive 1</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            max-width: 600px;
+            margin-left: 0;
+            margin-bottom: 20px; /* Add space between charts */
+        }
+        .spacer {
+            margin-bottom: 20px; /* Add space after buttons */
+        }
+        .extra-spacer {
+            margin-bottom: 40px; /* Add extra space after humidity */
+        }
+    </style>
 </head>
 <body>
     <h1>Hive 1</h1>
@@ -12,12 +25,20 @@
     <p id="todayMass"><strong>Mass:</strong> <span id="massValue"></span></p>
     <p id="todayTemp"><strong>Temperature:</strong> <span id="tempValue"></span></p>
     <p id="todayHumidity"><strong>Humidity:</strong> <span id="humidityValue"></span></p>
+    <div class="extra-spacer"></div>
     <button onclick="updateCharts(5)">Last 5 Days</button>
     <button onclick="updateCharts(10)">Last 10 Days</button>
     <button onclick="updateCharts(20)">Last 20 Days</button>
-    <canvas id="massChart" width="400" height="200"></canvas>
-    <canvas id="tempChart" width="400" height="200"></canvas>
-    <canvas id="humidityChart" width="400" height="200"></canvas>
+    <div class="spacer"></div>
+    <div class="chart-container">
+        <canvas id="massChart" width="400" height="200"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="tempChart" width="400" height="200"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="humidityChart" width="400" height="200"></canvas>
+    </div>
     <a href="index.html">Back to Home</a>
     <script>
         let massChart;

@@ -4,8 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Website</title>
+    <style>
+        #content {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
+    <script>
+        function checkPassword() {
+            var password = prompt("Please enter the password:");
+            if (password === "luis") {
+                document.getElementById('content').style.display = 'block';
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+        window.onload = checkPassword;
+    </script>
+    <div id="content">
+        <h1>Hello, World!</h1>
+        <ul>
+            <li><a href="data1.html">Data 1</a></li>
+            <li><a href="data2.html">Data 2</a></li>
+            <li><a href="data3.html">Data 3</a></li>
+        </ul>
+    </div>
 </body>
 </html>

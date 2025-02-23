@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hive 1</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Hive 1</h1>
+    <h2>Today</h2>
+    <p id="todayDate"><strong>Date:</strong> <span id="dateValue"></span></p>
+    <p id="todayMass"><strong>Mass:</strong> <span id="massValue"></span></p>
+    <button onclick="updateChart(5)">Last 5 Days</button>
+    <button onclick="updateChart(10)">Last 10 Days</button>
+    <button onclick="updateChart(20)">Last 20 Days</button>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <a href="index.html">Back to Home</a>
+    <script>
+        let chart;
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        function createChart(dates, masses, days) {
+            if (chart) {
+                chart.destroy();
+            }
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: `Last ${days} Days`,
+                        data: masses,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Mass [kg]'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(days) {
+            fetch('hive1.json')
+                .then(response => response.json())
+                .then(data => {
+                    const dates = data.dates.slice(0, days);
+                    const masses = data.masses.slice(0, days);
+                    createChart(dates, masses, days);
+                    document.getElementById('dateValue').innerText = `${data.dates[0]}`;
+                    document.getElementById('massValue').innerText = `${data.masses[0]} kg`;
+                })
+                .catch(error => console.error('Error fetching the data:', error));
+        }
+
+        // Initialize the chart with the last 10 days by default
+        updateChart(10);
+    </script>
+</body>
+</html>
+
